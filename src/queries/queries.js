@@ -1,44 +1,75 @@
 import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
 
-const getBooks = gql`
+const getHouses = gql`
   {
-    books {
-      id
-      name
-      genre
-      author {
+    houses {
+      owner {
         name
+        age
+        rating
         id
       }
+      id
+      beds
+      baths
+      price
+      location
     }
   }
 `;
 
-const getAuthors = gql`
+const getOwners = gql`
   {
-    authors {
-      id
+    owners {
       name
       age
-      books {
-        name
-        genre
+      houses {
+        location
+        beds
+        baths
+        price
       }
     }
   }
 `;
 
-const newBooks = gql`
-  mutation addBook($name: String!, $genre: String!, $authorId: ID!) {
-    addBook(name: $name, genre: $genre, authorId: $authorId) {
+const newOwners = gql`
+  mutation addOwner($name: String!, $age: String!, $ownerId: ID!) {
+    addOwner(name: $name, age: $age, ownerId: $ownerId) {
       name
-      genre
-      author {
-        name
-      }
+      age
+      ownerId
     }
   }
 `;
 
-export { getAuthors, getBooks, newBooks };
+const newHouses = gql`
+  mutation addHouse(
+    $ownerId: ID!
+    $location: String!
+    $beds: String!
+    $baths: String!
+    $price: String!
+  ) {
+    addHouse(
+      ownerId: $ownerId
+      location: $location
+      beds: $beds
+      baths: $baths
+      price: $price
+    ) {
+      owner {
+        name
+        age
+        rating
+        id
+      }
+      location
+      beds
+      baths
+      price
+    }
+  }
+`;
+
+export { getHouses, newOwners, newHouses, getOwners };

@@ -1,19 +1,23 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const bookSchema = new Schema({
+const ownerSchema = new Schema({
   name: {
     type: String,
     trim: true,
   },
-  genre: {
+  age: {
     type: String,
     trim: true,
   },
-  authorId: {
-    type: String,
+  rating: {
+    type: Number,
+    trim: true,
+  },
+  houses: {
+    type: Array,
     trim: true,
   },
 });
 
-module.exports = mongoose.model("Book", bookSchema);
+module.exports = mongoose.model("Owner", ownerSchema);

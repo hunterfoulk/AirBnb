@@ -1,6 +1,6 @@
 const graphql = require("graphql");
-const Book = require("../models/book");
-const Author = require("../models/Author");
+const House = require("../models/house");
+const Owner = require("../models/owner");
 const _ = require("lodash");
 
 const {
@@ -13,31 +13,34 @@ const {
   GraphQLNonNull,
 } = graphql;
 
-const BookType = new GraphQLObjectType({
-  name: "Book",
+const HouseType = new GraphQLObjectType({
+  name: "House",
   fields: () => ({
     id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    genre: { type: GraphQLString },
-    author: {
-      type: AuthorType,
+    location: { type: GraphQLString },
+    beds: { type: GraphQLString },
+    baths: { type: GraphQLString },
+    price: { type: GraphQLString },
+    owner: {
+      type: OwnerType,
       resolve(parent, args) {
-        return Author.findById(parent.authorId);
+        return Owner.findById(parent.ownerId);
       },
     },
   }),
 });
 
-const AuthorType = new GraphQLObjectType({
-  name: "Author",
+const OwnerType = new GraphQLObjectType({
+  name: "Owner",
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    age: { type: GraphQLInt },
-    books: {
-      type: new GraphQLList(BookType),
+    rating: { type: GraphQLInt },
+    age: { type: GraphQLString },
+    houses: {
+      type: new GraphQLList(HouseType),
       resolve(parent, args) {
-        return Book.find({ authorId: parent.id });
+        return House.find({ ownerId: parent.id });
       },
     },
   }),
@@ -46,30 +49,30 @@ const AuthorType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
-    book: {
-      type: BookType,
+    house: {
+      type: HouseType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        return Book.findById(args.id);
+        return House.findById(args.id);
       },
     },
-    author: {
-      type: AuthorType,
+    owner: {
+      type: OwnerType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        return Author.findById(args.id);
+        return Owner.findById(args.id);
       },
     },
-    books: {
-      type: new GraphQLList(BookType),
+    houses: {
+      type: new GraphQLList(HouseType),
       resolve(parent, args) {
-        return Book.find({});
+        return House.find({});
       },
     },
-    authors: {
-      type: new GraphQLList(AuthorType),
+    owners: {
+      type: new GraphQLList(OwnerType),
       resolve(parent, args) {
-        return Author.find({});
+        return Owner.find({});
       },
     },
   },
@@ -78,34 +81,42 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
-    addAuthor: {
-      type: AuthorType,
+    addOwner: {
+      type: OwnerType,
       args: {
         name: { type: GraphQLString },
-        age: { type: GraphQLInt },
+        age: { type: GraphQLString },
+        rating: { type: GraphQLInt },
       },
       resolve(parent, args) {
-        let author = new Author({
+        let owner = new Owner({
           name: args.name,
           age: args.age,
+          rating: args.rating,
         });
-        return author.save();
+        return owner.save();
       },
     },
-    addBook: {
-      type: BookType,
+    addHouse: {
+      type: HouseType,
       args: {
-        name: { type: new GraphQLNonNull(GraphQLString) },
-        genre: { type: new GraphQLNonNull(GraphQLString) },
-        authorId: { type: new GraphQLNonNull(GraphQLID) },
+        // owner: { type: new GraphQLNonNull(GraphQLString) },
+        location: { type: new GraphQLNonNull(GraphQLString) },
+        baths: { type: new GraphQLNonNull(GraphQLString) },
+        beds: { type: new GraphQLNonNull(GraphQLString) },
+        price: { type: new GraphQLNonNull(GraphQLString) },
+        ownerId: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve(parent, args) {
-        let book = new Book({
-          name: args.name,
-          genre: args.genre,
-          authorId: args.authorId,
+        let house = new House({
+          location: args.location,
+          // owner: args.owner,
+          beds: args.beds,
+          baths: args.baths,
+          price: args.price,
+          ownerId: args.ownerId,
         });
-        return book.save();
+        return house.save();
       },
     },
   },

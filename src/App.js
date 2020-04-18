@@ -1,6 +1,7 @@
 import React from "react";
-import BookList from "./BookList";
-import AddBook from "./AddBook";
+import HouseList from "./HouseList";
+import Navbar from "./Navbar";
+import Homepage from "./Homepage";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 
@@ -12,9 +13,9 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
-      <h1>Books</h1>
-      <BookList />
-      <AddBook />
+      <Navbar />
+      {/* <HouseList /> */}
+      <Homepage />
     </ApolloProvider>
   );
 }
