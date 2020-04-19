@@ -13,6 +13,22 @@ const {
   GraphQLNonNull,
 } = graphql;
 
+const OwnerType = new GraphQLObjectType({
+  name: "Owner",
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    rating: { type: GraphQLInt },
+    age: { type: GraphQLString },
+    houses: {
+      type: new GraphQLList(HouseType),
+      resolve(parent, args) {
+        return House.find({ owner: parent.id });
+      },
+    },
+  }),
+});
+
 const HouseType = new GraphQLObjectType({
   name: "House",
   fields: () => ({
@@ -24,23 +40,7 @@ const HouseType = new GraphQLObjectType({
     owner: {
       type: OwnerType,
       resolve(parent, args) {
-        return Owner.findById(parent.ownerId);
-      },
-    },
-  }),
-});
-
-const OwnerType = new GraphQLObjectType({
-  name: "Owner",
-  fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    rating: { type: GraphQLInt },
-    age: { type: GraphQLString },
-    houses: {
-      type: new GraphQLList(HouseType),
-      resolve(parent, args) {
-        return House.find({ ownerId: parent.id });
+        return Owner.findById(parent.owner);
       },
     },
   }),
@@ -100,21 +100,20 @@ const Mutation = new GraphQLObjectType({
     addHouse: {
       type: HouseType,
       args: {
-        // owner: { type: new GraphQLNonNull(GraphQLString) },
+        owner: { type: new GraphQLNonNull(GraphQLString) },
         location: { type: new GraphQLNonNull(GraphQLString) },
         baths: { type: new GraphQLNonNull(GraphQLString) },
         beds: { type: new GraphQLNonNull(GraphQLString) },
         price: { type: new GraphQLNonNull(GraphQLString) },
-        ownerId: { type: new GraphQLNonNull(GraphQLID) },
+        // ownerId: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve(parent, args) {
         let house = new House({
+          owner: args.owner,
           location: args.location,
-          // owner: args.owner,
           beds: args.beds,
           baths: args.baths,
           price: args.price,
-          ownerId: args.ownerId,
         });
         return house.save();
       },

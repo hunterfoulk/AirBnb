@@ -23,13 +23,24 @@ function Homepage() {
     name: false,
     age: false,
   });
-  const [modalOpen, setModalOpen] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
   const [houseModal, setHouseModal] = useState(false);
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
-  const [ownerId, setOwnerId] = useState("");
+  const [owner, setOwner] = useState("");
+  const [location, setLocation] = useState("");
+  const [beds, setBeds] = useState("");
+  const [baths, setBaths] = useState("");
+  const [price, setPrice] = useState("");
   const [newOwner] = useMutation(newOwners);
+  const [newHouse] = useMutation(newHouses);
 
+  const { loading, error, data } = useQuery(getOwners);
+
+  if (loading) return "Loading...";
+  if (error) return `Error! ${error.message}`;
+
+  // ADD OWNER
   const addNewOwner = (e) => {
     e.preventDefault();
     setError({
@@ -49,14 +60,41 @@ function Homepage() {
     setAge("");
   };
 
+  // ADD HOUSE
+  const addNewHouse = (e) => {
+    e.preventDefault();
+    setError({
+      owner: owner ? true : false,
+      location: location ? true : false,
+      beds: beds ? true : false,
+      baths: baths ? true : false,
+      price: price ? true : false,
+    });
+    console.log("new house created:", owner, location, beds, baths, price);
+    newHouse({
+      variables: {
+        owner: owner,
+        location: location,
+        beds: beds,
+        baths: baths,
+        price: price,
+      },
+    });
+    console.log("owners id", owner);
+    setOwner("");
+    setLocation("");
+    setBeds("");
+    setBaths("");
+    setPrice("");
+  };
+
   return (
     <div className="home-main">
       <Modal onClick={() => setModalOpen(!modalOpen)} open={modalOpen}>
         <div className="form-container">
           <form>
-            <h4>Register</h4>
+            <h4>Register as an owner</h4>
             <div className="form-field">
-              <label>Name</label>
               <input
                 placeholder="Enter name..."
                 value={name}
@@ -68,7 +106,6 @@ function Homepage() {
               ></input>
             </div>
             <div className="form-field">
-              <label>Age</label>
               <input
                 placeholder="Enter age..."
                 value={age}
@@ -87,13 +124,108 @@ function Homepage() {
             >
               Submit{" "}
             </Button>
+            <div className="modal-icons">
+              <FaFacebookF className="icons" />
+              <FaTwitter className="icons" />
+              <TiSocialInstagram className="icons" />
+            </div>
           </form>
         </div>
       </Modal>
-      <Modal
-        onClick={() => setHouseModal(!houseModal)}
-        open={houseModal}
-      ></Modal>
+      <Modal onClick={() => setHouseModal(!houseModal)} open={houseModal}>
+        <div className="form-container">
+          <form>
+            <h4>Register your house!</h4>
+            <div className="form-field">
+              <input
+                placeholder="Enter name..."
+                key={owner.id}
+                value={owner.id}
+                onChange={(e) => {
+                  setOwner(e.target.value);
+                  setError({ ...isError, owner: false });
+                }}
+                type="text"
+              ></input>
+            </div>
+            <div className="form-field">
+              <input
+                placeholder="Enter location..."
+                value={location}
+                onChange={(e) => {
+                  setLocation(e.target.value);
+                  setError({ ...isError, location: false });
+                }}
+                type="text"
+              ></input>
+            </div>
+            <div className="form-field">
+              <input
+                placeholder="Enter number of beds..."
+                value={beds}
+                onChange={(e) => {
+                  setBeds(e.target.value);
+                  setError({ ...isError, beds: false });
+                }}
+                type="text"
+              ></input>
+            </div>
+            <div className="form-field">
+              <input
+                placeholder="Enter number of baths..."
+                value={baths}
+                onChange={(e) => {
+                  setBaths(e.target.value);
+                  setError({ ...isError, baths: false });
+                }}
+                type="text"
+              ></input>
+            </div>
+            <div className="form-field">
+              <input
+                placeholder="Enter price..."
+                value={price}
+                onChange={(e) => {
+                  setPrice(e.target.value);
+                  setError({ ...isError, price: false });
+                }}
+                type="text"
+              ></input>
+            </div>
+            {/* <div key={ownerId} className="form-field">
+              <label>Owner</label>
+              <select
+                key={ownerId.id}
+                value={ownerId._id}
+                onChange={(e) => {
+                  setOwnerId(e.target.value);
+                  setError({ ...isError, ownerId: false });
+                  console.log(e.target.value);
+                  console.log(ownerId.id);
+                }}
+                type="text"
+              >
+                <option selected disabled>
+                  select your name
+                </option>
+                {data.owners.map((owner) => (
+                  <>
+                    <option value={ownerId.id}>{owner.name}</option>
+                  </>
+                ))}
+              </select>
+            </div> */}
+
+            <Button
+              bg="rgb(243, 88, 88)"
+              text="Submit"
+              onClick={(e) => addNewHouse(e)}
+            >
+              Submit{" "}
+            </Button>
+          </form>
+        </div>
+      </Modal>
       <div className="home-nav">
         <div onClick={() => setModalOpen(true)} className="nav-one">
           <span>List As An Owner</span>
@@ -111,42 +243,43 @@ function Homepage() {
           <Button text="Search" bg="rgb(243, 88, 88)" />
         </div>
       </div>
-      <div className="header">
-        <h2>Book your dream location</h2>
-
-        <h2>with us today.</h2>
-      </div>
-      <div className="card-container">
-        <div className="cards">
-          <div className="img-container">
-            <img src={homePicOne} />
-          </div>
-          <div className="card-bottom">
-            <h4>Online Booking</h4>
-            <div className="span-div">
-              <span>Make us your travel home!</span>
+      <div className="header-main-container">
+        <div className="header">
+          <h2>Book your dream location</h2>
+          <h2>with us today.</h2>
+        </div>
+        <div className="card-container">
+          <div className="cards">
+            <div className="img-container">
+              <img src={homePicOne} />
+            </div>
+            <div className="card-bottom">
+              <h4>Online Booking</h4>
+              <div className="span-div">
+                <span>Make us your travel home!</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="cards">
-          <div className="img-container">
-            <img src={roomPic} />
-          </div>
-          <div className="card-bottom">
-            <h4>Affordable housing</h4>
-            <div className="span-div">
-              <span>Stay up to as long as a month or longer.</span>
+          <div className="cards">
+            <div className="img-container">
+              <img src={roomPic} />
+            </div>
+            <div className="card-bottom">
+              <h4>Affordable housing</h4>
+              <div className="span-div">
+                <span>Stay up to as long as a month or longer.</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="cards">
-          <div className="img-container">
-            <img src={homePicTwo} />
-          </div>
-          <div className="card-bottom">
-            <h4>Amazing destinations</h4>
-            <div className="span-div">
-              <span>Find and stay at our amazing destinations!</span>
+          <div className="cards">
+            <div className="img-container">
+              <img src={homePicTwo} />
+            </div>
+            <div className="card-bottom">
+              <h4>Amazing destinations</h4>
+              <div className="span-div">
+                <span>Find and stay at our amazing destinations!</span>
+              </div>
             </div>
           </div>
         </div>

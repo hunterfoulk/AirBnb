@@ -34,25 +34,25 @@ const getOwners = gql`
 `;
 
 const newOwners = gql`
-  mutation addOwner($name: String!, $age: String!, $ownerId: ID!) {
-    addOwner(name: $name, age: $age, ownerId: $ownerId) {
+  mutation addOwner($name: String!, $age: String!) {
+    addOwner(name: $name, age: $age) {
       name
       age
-      ownerId
+      id
     }
   }
 `;
 
 const newHouses = gql`
   mutation addHouse(
-    $ownerId: ID!
+    $owner: String!
     $location: String!
     $beds: String!
     $baths: String!
     $price: String!
   ) {
     addHouse(
-      ownerId: $ownerId
+      owner: $owner
       location: $location
       beds: $beds
       baths: $baths

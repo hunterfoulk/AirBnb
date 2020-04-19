@@ -18,7 +18,7 @@ const houseSchema = new Schema({
     type: String,
     trim: true,
   },
-  ownerId: {
+  owner: {
     type: String,
     trim: true,
   },

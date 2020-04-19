@@ -136,7 +136,7 @@ function Navbar() {
           <div className="form-container">
             <form>
               <span>Register your house!</span>
-              {/* <div className="form-field">
+              <div className="form-field">
                 <label>Owner</label>
                 <input
                   key={ownerId.id}
@@ -147,7 +147,7 @@ function Navbar() {
                   }}
                   type="text"
                 ></input>
-              </div> */}
+              </div>
               <div className="form-field">
                 <label>Location</label>
                 <input
