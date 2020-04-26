@@ -1,5 +1,4 @@
 import React from "react";
-import HouseList from "./HouseList";
 import Navbar from "./Navbar";
 import Homepage from "./Homepage";
 

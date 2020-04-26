@@ -11,6 +11,7 @@ import Modal from "godspeed/build/Modal";
 import { FaFacebookF } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { TiSocialInstagram } from "react-icons/ti";
+import Drawer from "godspeed/build/Drawer";
 import Axios from "axios";
 
 function Homepage() {
@@ -28,6 +29,8 @@ function Homepage() {
   const [baths, setBaths] = useState("");
   const [price, setPrice] = useState("");
   const [img, setImg] = useState(null);
+  const [drawer, setDrawer] = useState(false);
+  const [houses, setHouses] = useState([]);
 
   // ADD HOUSE
 
@@ -64,8 +67,71 @@ function Homepage() {
     setImg(null);
   };
 
+  const getHouses = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/houses");
+      const jsonData = await response.json();
+      setHouses(jsonData);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getHouses();
+  }, []);
+
+  const handleSearch = async (e) => {
+    if (e.target.value !== "") {
+      let filteredData = houses.filter((house) =>
+        house.location?.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      setHouses(filteredData);
+    } else {
+      getHouses();
+    }
+  };
+
   return (
     <div className="home-main">
+      <Drawer
+        className="main-drawer"
+        onClick={() => setDrawer(!drawer)}
+        open={drawer}
+        padding="20px 20px"
+      >
+        <div className="drawer-header">
+          <h1>Houses for stay</h1>
+          <input
+            placeholder="Search by city..."
+            className="search-filter"
+            type="search"
+            onChange={handleSearch}
+          ></input>
+        </div>
+
+        {houses.map((house) => (
+          <div className="mapped-houses">
+            <div className="img-container">
+              <img className="house-images" img src={house.img}></img>
+            </div>
+            <div className="drawer-text">
+              <span>
+                House Owner <span className="owner">{house.owner}</span>
+              </span>
+              <span>
+                {" "}
+                City <span className="owner">{house.location}</span>
+              </span>
+              <div className="drawer-text-two">
+                <span>beds {house.beds}</span>
+                <span> baths {house.baths}</span>
+                <span className="price-span"> ${house.price}/night</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </Drawer>
       <Modal onClick={() => setModalOpen(!modalOpen)} open={modalOpen}>
         <div className="form-container">
           <form>
@@ -122,7 +188,7 @@ function Homepage() {
             </div>
             <div className="form-field">
               <input
-                placeholder="Enter location..."
+                placeholder="Enter city location..."
                 value={location}
                 onChange={(e) => {
                   setLocation(e.target.value);
@@ -203,7 +269,11 @@ function Homepage() {
             <span>Search Locations</span>
             <p>search</p>
           </div>
-          <Button text="Search" bg="rgb(243, 88, 88)" />
+          <Button
+            text="Search"
+            bg="rgb(243, 88, 88)"
+            onClick={() => setDrawer(true)}
+          />
         </div>
       </div>
       <div className="header-main-container">
