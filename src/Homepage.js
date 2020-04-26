@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import roomPic from "./images/roompic.jpg";
 import homePicOne from "./images/homepic1.jpg";
 import homePicTwo from "./images/homepic2.jpg";
@@ -11,12 +11,7 @@ import Modal from "godspeed/build/Modal";
 import { FaFacebookF } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { TiSocialInstagram } from "react-icons/ti";
-import { graphql } from "react-apollo";
-import { flowRight as compose } from "lodash";
-import { useQuery } from "@apollo/react-hooks";
-import { newHouses, newOwners } from "./queries/queries";
-import { useMutation } from "@apollo/react-hooks";
-import { getOwners } from "./queries/queries";
+import Axios from "axios";
 
 function Homepage() {
   const [isError, setError] = useState({
@@ -32,60 +27,55 @@ function Homepage() {
   const [beds, setBeds] = useState("");
   const [baths, setBaths] = useState("");
   const [price, setPrice] = useState("");
-  const [newOwner] = useMutation(newOwners);
-  const [newHouse] = useMutation(newHouses);
-
-  const { loading, error, data } = useQuery(getOwners);
-
-  if (loading) return "Loading...";
-  if (error) return `Error! ${error.message}`;
-
-  // ADD OWNER
-  const addNewOwner = (e) => {
-    e.preventDefault();
-    setError({
-      name: name ? true : false,
-      age: age ? true : false,
-    });
-    console.log("new owner created:", name, age);
-
-    newOwner({
-      variables: {
-        name: name,
-        age: age,
-      },
-    });
-
-    setName("");
-    setAge("");
-  };
+  const [img, setImg] = useState(null);
 
   // ADD HOUSE
-  const addNewHouse = (e) => {
+
+  const addNewHouse = async (e) => {
     e.preventDefault();
-    setError({
-      owner: owner ? true : false,
-      location: location ? true : false,
-      beds: beds ? true : false,
-      baths: baths ? true : false,
-      price: price ? true : false,
-    });
-    console.log("new house created:", owner, location, beds, baths, price);
-    newHouse({
-      variables: {
-        owner: owner,
-        location: location,
-        beds: beds,
-        baths: baths,
-        price: price,
-      },
-    });
-    console.log("owners id", owner);
+    let formData = new FormData();
+
+    formData.append("owner", owner);
+    formData.append("location", location);
+    formData.append("beds", beds);
+    formData.append("baths", baths);
+    formData.append("price", price);
+    formData.append("img", img);
+
+    let headers = {
+      "Content-Type": "multipart/form-data",
+    };
+
+    Axios.post("http://localhost:5000/houses", formData, {
+      headers: headers,
+    })
+
+      .then(() => {
+        console.log("data sent to database");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     setOwner("");
     setLocation("");
     setBeds("");
     setBaths("");
     setPrice("");
+    setImg(null);
+  };
+
+  const onSubmitForm = async (e) => {
+    e.preventDefault();
+    try {
+      const body = { owner, location, beds, baths, price, img };
+      const response = await fetch("http://localhost:5000/houses", {
+        method: "POST",
+        headers: { "Content-Type": "multipart/form-data" },
+        body: JSON.stringify(body),
+      });
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   return (
@@ -117,11 +107,7 @@ function Homepage() {
               ></input>
             </div>
 
-            <Button
-              bg="rgb(243, 88, 88)"
-              text="Submit"
-              onClick={(e) => addNewOwner(e)}
-            >
+            <Button bg="rgb(243, 88, 88)" text="Submit">
               Submit{" "}
             </Button>
             <div className="modal-icons">
@@ -134,7 +120,7 @@ function Homepage() {
       </Modal>
       <Modal onClick={() => setHouseModal(!houseModal)} open={houseModal}>
         <div className="form-container">
-          <form>
+          <form onSubmit={(e) => addNewHouse(e)}>
             <h4>Register your house!</h4>
             <div className="form-field">
               <input
@@ -192,30 +178,16 @@ function Homepage() {
                 type="text"
               ></input>
             </div>
-            {/* <div key={ownerId} className="form-field">
-              <label>Owner</label>
-              <select
-                key={ownerId.id}
-                value={ownerId._id}
+            <div className="file-input">
+              <input
+                accept="image/gif, image/jpeg, image/png"
                 onChange={(e) => {
-                  setOwnerId(e.target.value);
-                  setError({ ...isError, ownerId: false });
+                  setImg(e.target.files[0]);
                   console.log(e.target.value);
-                  console.log(ownerId.id);
                 }}
-                type="text"
-              >
-                <option selected disabled>
-                  select your name
-                </option>
-                {data.owners.map((owner) => (
-                  <>
-                    <option value={ownerId.id}>{owner.name}</option>
-                  </>
-                ))}
-              </select>
-            </div> */}
-
+                type="file"
+              />
+            </div>
             <Button
               bg="rgb(243, 88, 88)"
               text="Submit"
@@ -223,12 +195,17 @@ function Homepage() {
             >
               Submit{" "}
             </Button>
+            <div className="modal-icons">
+              <FaFacebookF className="icons" />
+              <FaTwitter className="icons" />
+              <TiSocialInstagram className="icons" />
+            </div>
           </form>
         </div>
       </Modal>
       <div className="home-nav">
         <div onClick={() => setModalOpen(true)} className="nav-one">
-          <span>List As An Owner</span>
+          <span>Register An Account</span>
           <p>register name,age...</p>
         </div>
         <div onClick={() => setHouseModal(true)} className="nav-two">
@@ -376,8 +353,4 @@ function Homepage() {
     </div>
   );
 }
-export default compose(
-  graphql(newHouses, { name: "newHouses" }),
-  graphql(getOwners, { name: "getOwners" }),
-  graphql(newOwners, { name: "newOwners" })
-)(Homepage);
+export default Homepage;

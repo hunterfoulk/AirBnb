@@ -9,13 +9,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.663.0",
+    "body-parser": "^1.19.0",
+    "busboy": "^0.3.1",
+    "busboy-body-parser": "^0.3.2",
+    "connect-busboy": "0.0.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "express-graphql": "^0.9.0",
-    "graphql": "^14.6.0",
     "lodash": "^4.17.15",
-    "mongodb": "^3.5.5",
-    "mongoose": "^5.9.7"
+    "pg": "^8.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"

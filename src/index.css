@@ -18,6 +18,7 @@
   letter-spacing: 0.1rem;
   padding: 0px 15px;
 }
+
 input {
   /* margin: 5px; */
   margin-bottom: 35px;
@@ -98,9 +99,12 @@ input::placeholder {
 .modal-button:hover {
   background-color: rgba(240, 240, 240, 0.897);
 }
-.drawer-header {
+.drawer-header h1 {
   text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 18px;
 }
+
 .drawer-header p {
   color: rgb(109, 108, 108);
 }
@@ -463,6 +467,56 @@ input::placeholder {
   /* background-color: rgb(68, 160, 68); */
   font-size: 22px;
 }
+
 .icons {
   margin-left: 12px;
+}
+
+.mapped-houses {
+  display: flex;
+  flex-direction: row;
+  /* padding: 10px 10px; */
+  /* background-color: rgb(163, 71, 71); */
+  border-bottom: 1px solid rgba(151, 150, 150, 0.692);
+  margin-bottom: 20px;
+}
+.mapped-houses img {
+  width: 100%;
+  max-width: 450px;
+}
+
+.img-container {
+  display: flex;
+  flex: 0.7;
+}
+.drawer-text {
+  font-size: 20px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  flex-direction: column;
+  text-transform: capitalize;
+  /* background-color: rgb(61, 110, 61); */
+  flex: 1;
+}
+
+.drawer-text-two {
+  display: flex;
+  justify-content: space-between;
+  color: rgb(105, 105, 105);
+}
+.price-span {
+  color: black;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.owner {
+  font-weight: bold;
+  color: black;
+  text-transform: capitalize;
+}
+.file-input {
+  text-align: center;
+  border-bottom: none;
 }
