@@ -3,6 +3,7 @@
 * {
   padding: 0;
   margin: 0;
+
   font-family: "Libre Baskerville", serif;
 }
 .navbar {
@@ -99,10 +100,13 @@ input::placeholder {
 .modal-button:hover {
   background-color: rgba(240, 240, 240, 0.897);
 }
+.drawer-header {
+  text-align: center;
+}
 .drawer-header h1 {
   text-align: center;
   font-family: Arial, Helvetica, sans-serif;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .drawer-header p {
@@ -147,10 +151,10 @@ input::placeholder {
     0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   font-family: "Libre Baskerville", serif;
 }
+
 .home-main {
   display: flex;
   width: 100%;
-  overflow-x: hidden;
   /* background-color: rgb(88, 88, 179); */
   flex-direction: column;
   justify-content: center;
@@ -438,6 +442,7 @@ input::placeholder {
 }
 .footer {
   display: flex;
+  /* position: fixed; */
   height: 60px;
   /* background-color: rgb(179, 103, 103); */
   width: 70%;
@@ -510,6 +515,9 @@ input::placeholder {
   font-weight: 600;
   opacity: 0.8;
 }
+.main-drawer {
+  overflow: scroll;
+}
 
 .owner {
   font-weight: bold;
@@ -519,4 +527,6 @@ input::placeholder {
 .file-input {
   text-align: center;
   border-bottom: none;
+}
+.search-filter {
 }

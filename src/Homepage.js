@@ -64,20 +64,6 @@ function Homepage() {
     setImg(null);
   };
 
-  const onSubmitForm = async (e) => {
-    e.preventDefault();
-    try {
-      const body = { owner, location, beds, baths, price, img };
-      const response = await fetch("http://localhost:5000/houses", {
-        method: "POST",
-        headers: { "Content-Type": "multipart/form-data" },
-        body: JSON.stringify(body),
-      });
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
-
   return (
     <div className="home-main">
       <Modal onClick={() => setModalOpen(!modalOpen)} open={modalOpen}>
@@ -169,7 +155,7 @@ function Homepage() {
             </div>
             <div className="form-field">
               <input
-                placeholder="Enter price..."
+                placeholder="Enter price per night..."
                 value={price}
                 onChange={(e) => {
                   setPrice(e.target.value);
