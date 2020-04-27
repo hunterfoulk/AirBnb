@@ -10,6 +10,7 @@ import fishPic from "./images/fishpic.jpg";
 import Modal from "godspeed/build/Modal";
 import { FaFacebookF } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
+import { FaGlobe } from "react-icons/fa";
 import { TiSocialInstagram } from "react-icons/ti";
 import Drawer from "godspeed/build/Drawer";
 import Axios from "axios";
@@ -32,7 +33,7 @@ function Homepage() {
   const [drawer, setDrawer] = useState(false);
   const [houses, setHouses] = useState([]);
 
-  // ADD HOUSE
+  // ADD HOUSE`
 
   const addNewHouse = async (e) => {
     e.preventDefault();

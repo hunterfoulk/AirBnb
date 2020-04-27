@@ -541,8 +541,12 @@ input::placeholder {
   box-shadow: 0px 0.5px 3px 2px rgba(66, 66, 66, 0.253);
   border: none;
 }
+.signup-button:hover {
+  box-shadow: 0px 0.5px 3px 3px rgba(66, 66, 66, 0.253);
+}
 .login-button {
   padding: 10px 10px;
+  text-align: center;
   border-radius: 17px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 600;
@@ -554,6 +558,9 @@ input::placeholder {
   /* box-shadow: 0px 0.5px 3px 2px rgba(66, 66, 66, 0.253); */
   border: none;
   margin-right: 12px;
+}
+.nav-button-container {
+  margin-right: 15px;
 }
 .login {
   color: black;
@@ -567,4 +574,63 @@ input::placeholder {
 }
 .card-bottom h4 {
   margin-left: 9px;
+}
+.signup-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
+  height: 550px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+.signup-modal form {
+  text-align: center;
+  margin-top: 35px;
+  display: flex;
+  flex-direction: column;
+}
+.signup-header {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid rgba(124, 124, 124, 0.479);
+  width: 100%;
+  padding: 15px;
+}
+.signup-header h1 {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 17px;
+}
+.signup-form-button {
+  position: relative;
+  bottom: 15px;
+}
+.social-buttons {
+  background-color: transparent;
+  border-radius: 13px;
+  font-size: 15px;
+  color: rgb(104, 104, 104);
+  width: 350px;
+  height: 40px;
+  margin: 10px;
+  border: 1px solid grey;
+}
+.facebook-signup {
+  color: rgb(89, 89, 228);
+  font-size: 18px;
+  position: relative;
+  float: left;
+  left: 15px;
+}
+.google-signup {
+  color: rgb(253, 40, 25);
+  font-size: 18px;
+  position: relative;
+  float: left;
+  left: 15px;
+}
+.email-signup {
+  font-size: 18px;
+  position: relative;
+  float: left;
+  left: 15px;
 }

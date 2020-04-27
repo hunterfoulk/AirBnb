@@ -94,6 +94,50 @@ app.post("/houses", async (req, res) => {
   }
 });
 
+app.post("/signup", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const { username } = req.body;
+    const { password } = req.body;
+
+    const newUser = await pool.query(
+      "INSERT INTO users (email,username,password) VALUES($1,$2,$3) RETURNING *",
+      [email, username, password]
+    );
+    res.json(newUser.rows[0]);
+    console.log("account created and posted to database");
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const { username } = req.body;
+    const { password } = req.body;
+
+    const result = await pool.query(
+      " SELECT * FROM users WHERE email = $1 AND username = $2 AND password = $3 ",
+      [email, username, password]
+    );
+
+    const user = result.rows[0];
+    console.table(user);
+
+    if (!user) {
+      res
+        .status(401)
+        .send({ error: "Login failed! Check authentication credentials" });
+    } else {
+      res.status(200).send("login sucessful");
+    }
+  } catch (error) {
+    console.log("login error");
+    res.status(400).send(error);
+  }
+});
+
 app.listen(5000, () => {
   console.log("server started on port 5000");
 });
