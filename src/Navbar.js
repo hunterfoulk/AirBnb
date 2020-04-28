@@ -4,8 +4,10 @@ import Button from "godspeed/build/Button";
 import { FaFacebook } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import { AiOutlineMail } from "react-icons/ai";
-import { MdClose } from "react-icons/md";
 import axios from "axios";
+import { useStateValue } from "./state";
+import Cookies from "js-cookie";
+import setAuthorizationToken from "./authorization";
 
 function Navbar() {
   const [modalSignup, setModalSignup] = useState(false);
@@ -13,6 +15,7 @@ function Navbar() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [auth, dispatch] = useStateValue();
 
   async function handleRegister(e) {
     e.preventDefault();
@@ -41,9 +44,22 @@ function Navbar() {
         password: password,
       })
 
-      .then(
-        (res) => console.log(res.data) & console.log("Logged in succesfully!")
-      )
+      .then((res) => {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+
+        console.log("log in succesfull");
+
+        dispatch({
+          type: "login",
+          auth: {
+            isAuthenticated: true,
+            token: res.data.token,
+            user: res.data.user,
+          },
+        });
+        console.log(res.data, res.data.user);
+      })
       .catch((error) => console.error("Log in was not succesful:", error));
   }
 

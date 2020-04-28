@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const AWS = require("aws-sdk");
 const Busboy = require("busboy");
 const config = require("./config");
+const jwt = require("jsonwebtoken");
 
 app.use(cors());
 app.use(express.json());
@@ -126,17 +127,45 @@ app.post("/login", async (req, res) => {
     console.table(user);
 
     if (!user) {
-      res
-        .status(401)
-        .send({ error: "Login failed! Check authentication credentials" });
+      res.status(401).send({
+        error: "Login failed! Check log in credentials",
+      });
     } else {
-      res.status(200).send("login sucessful");
+      jwt.sign({ user }, "secretkey", (err, token) => {
+        res.cookie("jwt", jwt, token, {
+          httpOnly: true,
+          secure: true,
+        });
+
+        console.log(user, token);
+        res.status(200).send("web token set succesfully");
+      });
     }
   } catch (error) {
     console.log("login error");
     res.status(400).send(error);
   }
 });
+
+// Verify Token
+function verifyToken(req, res, next) {
+  // Get auth header value
+  const bearerHeader = req.headers["authorization"];
+  // Check if bearer is undefined
+  if (typeof bearerHeader !== "undefined") {
+    // Split at the space
+    const bearer = bearerHeader.split(" ");
+    // Get token from array
+    const bearerToken = bearer[1];
+    // Set the token
+    req.token = bearerToken;
+    // Next middleware
+    next();
+  } else {
+    // Forbidden
+    res.sendStatus(403);
+  }
+}
 
 app.listen(5000, () => {
   console.log("server started on port 5000");
