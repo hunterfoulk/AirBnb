@@ -6,8 +6,6 @@ import { FaGoogle } from "react-icons/fa";
 import { AiOutlineMail } from "react-icons/ai";
 import axios from "axios";
 import { useStateValue } from "./state";
-import Cookies from "js-cookie";
-import setAuthorizationToken from "./authorization";
 
 function Navbar() {
   const [modalSignup, setModalSignup] = useState(false);
@@ -15,7 +13,7 @@ function Navbar() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [auth, dispatch] = useStateValue();
+  const [{ auth }, dispatch] = useStateValue();
 
   async function handleRegister(e) {
     e.preventDefault();
@@ -38,30 +36,37 @@ function Navbar() {
     e.preventDefault();
 
     axios
-      .post("http://localhost:5000/login", {
-        email: email,
-        username: username,
-        password: password,
-      })
+      .post(
+        "http://localhost:5000/login",
+
+        {
+          email: email,
+          username: username,
+          password: password,
+        },
+        { withCredentials: true }
+      )
 
       .then((res) => {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data.user));
+        const user = res.data.payload;
 
         console.log("log in succesfull");
+        console.log("response", res);
 
         dispatch({
           type: "login",
           auth: {
             isAuthenticated: true,
-            token: res.data.token,
-            user: res.data.user,
+            user: user,
           },
         });
-        console.log(res.data, res.data.user);
       })
       .catch((error) => console.error("Log in was not succesful:", error));
   }
+
+  useEffect(() => {
+    console.log(auth);
+  }, [auth]);
 
   return (
     <>

@@ -9,14 +9,25 @@ const AWS = require("aws-sdk");
 const Busboy = require("busboy");
 const config = require("./config");
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+app.use(cookieParser());
+
 app.use(express.json());
 app.use(busboy());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(busboyBodyParser());
+
+const SECRET =
+  "785bc0808e13150aa10d06e563676943d93548e49c93f32a46907b9a5599fd6ee72dd3edac14eef51c22432ce82e90f0187d24d3c44e673af2691e1950c4b265";
 
 const BUCKET_NAME = "airbnbbucket";
 const IAM_USER_KEY = config.iamUser;
@@ -48,6 +59,22 @@ function uploadToS3(file) {
   });
 }
 
+//middleware
+const auth = async (req, res, next) => {
+  const token = req.cookies.access_token;
+  console.log("cookies", token);
+
+  try {
+    const userAuth = jwt.verify(token, SECRET);
+    res.user = userAuth;
+  } catch (error) {
+    res.status(400);
+    throw error;
+  }
+  next();
+  res.status(200);
+};
+
 app.get("/houses", async (req, res) => {
   try {
     const getHouses = await pool.query("SELECT * FROM house");
@@ -57,7 +84,7 @@ app.get("/houses", async (req, res) => {
   }
 });
 
-app.post("/houses", async (req, res) => {
+app.post("/houses", auth, async (req, res) => {
   try {
     const { owner } = req.body;
     const { location } = req.body;
@@ -119,7 +146,7 @@ app.post("/login", async (req, res) => {
     const { password } = req.body;
 
     const result = await pool.query(
-      " SELECT * FROM users WHERE email = $1 AND username = $2 AND password = $3 ",
+      "SELECT * FROM users WHERE email = $1 AND username = $2 AND password = $3",
       [email, username, password]
     );
 
@@ -131,41 +158,28 @@ app.post("/login", async (req, res) => {
         error: "Login failed! Check log in credentials",
       });
     } else {
-      jwt.sign({ user }, "secretkey", (err, token) => {
-        res.cookie("jwt", jwt, token, {
-          httpOnly: true,
-          secure: true,
-        });
+      const payload = {
+        email: email,
+        user_id: user.user_id,
+      };
+      const token = jwt.sign(payload, SECRET);
 
-        console.log(user, token);
-        res.status(200).send("web token set succesfully");
+      res.cookie("access_token", token, {
+        maxAGE: 100000,
+        httpOnly: false,
+        secure: false,
       });
+
+      res.status(200).send({
+        payload: payload,
+      });
+      console.log(payload, token);
     }
   } catch (error) {
     console.log("login error");
     res.status(400).send(error);
   }
 });
-
-// Verify Token
-function verifyToken(req, res, next) {
-  // Get auth header value
-  const bearerHeader = req.headers["authorization"];
-  // Check if bearer is undefined
-  if (typeof bearerHeader !== "undefined") {
-    // Split at the space
-    const bearer = bearerHeader.split(" ");
-    // Get token from array
-    const bearerToken = bearer[1];
-    // Set the token
-    req.token = bearerToken;
-    // Next middleware
-    next();
-  } else {
-    // Forbidden
-    res.sendStatus(403);
-  }
-}
 
 app.listen(5000, () => {
   console.log("server started on port 5000");

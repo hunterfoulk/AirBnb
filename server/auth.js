@@ -1,21 +1,18 @@
 const jwt = require("jsonwebtoken");
-require("dotenv").config;
+
+const SECRET =
+  "785bc0808e13150aa10d06e563676943d93548e49c93f32a46907b9a5599fd6ee72dd3edac14eef51c22432ce82e90f0187d24d3c44e673af2691e1950c4b265";
 
 const auth = async (req, res, next) => {
-  const token = req.header("Authorization").replace("Bearer", "");
-  const data = jwt.verify(token, "secret");
+  const token = req.cookies.access_token;
+
   try {
-    const users = await pool.query(
-      " SELECT * FROM users WHERE email = $1 AND username = $2 AND password = $3 ",
-      [email, username, password]
-    );
-    if (!user) {
-      throw new Error();
-    }
-    req.users = users;
-    req.token = token;
-    next();
+    jwt.verify(token, SECRET);
   } catch (error) {
-    res.status(401).send({ error: "Not authorized to access this resource" });
+    res.status(400);
+    throw error;
   }
+  next();
+  res.status(200);
 };
+module.exports = auth;

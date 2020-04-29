@@ -156,6 +156,7 @@ input::placeholder {
   display: flex;
   width: 100%;
   /* background-color: rgb(88, 88, 179); */
+  height: 100%;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -442,14 +443,19 @@ input::placeholder {
 }
 .footer {
   display: flex;
-  /* position: fixed; */
+  justify-content: center;
   height: 60px;
   /* background-color: rgb(179, 103, 103); */
-  width: 70%;
+  width: 100%;
   margin-top: 200px;
   padding-bottom: 15px;
-  justify-content: space-between;
+
   border-top: 1px solid rgba(194, 194, 194, 0.712);
+}
+.center {
+  display: flex;
+  width: 70%;
+  justify-content: space-evenly;
 }
 .footer-left {
   display: flex;
