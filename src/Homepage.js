@@ -39,12 +39,12 @@ function Homepage() {
     const userData = auth.user.username;
 
     // formData.append("owner", owner);
+    formData.append("owner", userData);
     formData.append("location", location);
     formData.append("beds", beds);
     formData.append("baths", baths);
     formData.append("price", price);
     formData.append("img", img);
-    formData.append("owner", userData);
 
     console.log("users username", userData);
 
