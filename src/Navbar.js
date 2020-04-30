@@ -9,7 +9,7 @@ import { useStateValue } from "./state";
 
 function Navbar() {
   const [modalSignup, setModalSignup] = useState(false);
-  const [loginModal, setLoginModal] = useState(true);
+  const [loginModal, setLoginModal] = useState(false);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -50,7 +50,7 @@ function Navbar() {
       .then((res) => {
         const user = res.data.payload;
 
-        console.log("log in succesfull");
+        console.log("logged in succesfully");
         console.log("response", res);
 
         dispatch({
@@ -60,9 +60,22 @@ function Navbar() {
             user: user,
           },
         });
+        setLoginModal(false);
       })
       .catch((error) => console.error("Log in was not succesful:", error));
   }
+
+  const handleLogout = () => {
+    document.cookie.split(";").forEach(function (c) {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+
+    dispatch({
+      type: "logout",
+    });
+  };
 
   useEffect(() => {
     console.log(auth);
@@ -73,15 +86,30 @@ function Navbar() {
       <div className="navbar">
         <h2>Airbnb</h2>
         <div className="nav-button-container">
-          <button onClick={() => setLoginModal(true)} className="login-button">
-            Log in
-          </button>
-          <button
-            onClick={() => setModalSignup(true)}
-            className="signup-button"
-          >
-            Sign up
-          </button>
+          {auth.isAuthenticated ? (
+            <>
+              <span className="logged-in"> {auth.user.username}</span>
+              <button onClick={handleLogout} className="signup-button">
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => setLoginModal(true)}
+                className="login-button"
+              >
+                Log in
+              </button>
+              <button
+                onClick={() => setModalSignup(true)}
+                className="signup-button"
+              >
+                Sign up
+              </button>
+            </>
+          )}
+
           <Modal
             padding="0px 0px"
             onClick={() => setModalSignup(!modalSignup)}

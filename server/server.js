@@ -62,6 +62,7 @@ function uploadToS3(file) {
 //middleware
 const auth = async (req, res, next) => {
   const token = req.cookies.access_token;
+
   console.log("cookies", token);
 
   try {
@@ -86,11 +87,13 @@ app.get("/houses", async (req, res) => {
 
 app.post("/houses", auth, async (req, res) => {
   try {
-    const { owner } = req.body;
+    // const { owner } = req.body;
     const { location } = req.body;
     const { beds } = req.body;
     const { baths } = req.body;
     const { price } = req.body;
+
+    const owner = req.username;
 
     var busboy = new Busboy({ headers: req.headers });
     const file = req.files.img;
@@ -114,8 +117,9 @@ app.post("/houses", auth, async (req, res) => {
         `https://airbnbbucket.s3.us-east-2.amazonaws.com/airbnbfolder/${file.name}`,
       ]
     );
-
+    // const ownerName = { newHouse };
     res.json(newHouse.rows);
+    // res.send(ownerName);
     console.log("posted to database");
   } catch (err) {
     console.error(err.message);
@@ -160,12 +164,13 @@ app.post("/login", async (req, res) => {
     } else {
       const payload = {
         email: email,
+        username: username,
         user_id: user.user_id,
       };
       const token = jwt.sign(payload, SECRET);
 
       res.cookie("access_token", token, {
-        maxAGE: 100000,
+        maxAGE: 10000,
         httpOnly: false,
         secure: false,
       });

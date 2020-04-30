@@ -10,6 +10,9 @@ function App() {
       token: "",
       user: {},
     },
+    owners: {
+      owners: {},
+    },
   };
 
   const reducer = (state, action) => {
@@ -22,6 +25,11 @@ function App() {
       case "logout":
         return {
           ...initialState,
+        };
+      case "owner":
+        return {
+          ...state,
+          owner: action.owner,
         };
 
       default:

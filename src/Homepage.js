@@ -13,6 +13,7 @@ import { FaTwitter } from "react-icons/fa";
 import { TiSocialInstagram } from "react-icons/ti";
 import Drawer from "godspeed/build/Drawer";
 import Axios from "axios";
+import { useStateValue } from "./state";
 
 function Homepage() {
   const [isError, setError] = useState({
@@ -21,8 +22,6 @@ function Homepage() {
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [houseModal, setHouseModal] = useState(false);
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
   const [owner, setOwner] = useState("");
   const [location, setLocation] = useState("");
   const [beds, setBeds] = useState("");
@@ -31,19 +30,23 @@ function Homepage() {
   const [img, setImg] = useState(null);
   const [drawer, setDrawer] = useState(false);
   const [houses, setHouses] = useState([]);
+  const [{ auth, owners }, dispatch] = useStateValue();
 
   // ADD HOUSE
-
   const addNewHouse = async (e) => {
     e.preventDefault();
     let formData = new FormData();
+    const userData = auth.user.username;
 
-    formData.append("owner", owner);
+    // formData.append("owner", owner);
     formData.append("location", location);
     formData.append("beds", beds);
     formData.append("baths", baths);
     formData.append("price", price);
     formData.append("img", img);
+    formData.append("owner", userData);
+
+    console.log("users username", userData);
 
     let headers = {
       "Content-Type": "multipart/form-data",
@@ -135,51 +138,13 @@ function Homepage() {
           ))}
         </Drawer>
 
-        <Modal onClick={() => setModalOpen(!modalOpen)} open={modalOpen}>
-          <div className="form-container">
-            <form>
-              <h4>Register as an owner</h4>
-              <div className="form-field">
-                <input
-                  placeholder="Enter name..."
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                    setError({ ...isError, name: false });
-                  }}
-                  type="text"
-                ></input>
-              </div>
-              <div className="form-field">
-                <input
-                  placeholder="Enter age..."
-                  value={age}
-                  onChange={(e) => {
-                    setAge(e.target.value);
-                    setError({ ...isError, age: false });
-                  }}
-                  type="text"
-                ></input>
-              </div>
-
-              <Button bg="rgb(243, 88, 88)" text="Submit">
-                Submit{" "}
-              </Button>
-              <div className="modal-icons">
-                <FaFacebookF className="icons" />
-                <FaTwitter className="icons" />
-                <TiSocialInstagram className="icons" />
-              </div>
-            </form>
-          </div>
-        </Modal>
         <Modal onClick={() => setHouseModal(!houseModal)} open={houseModal}>
           <div className="form-container">
             <form onSubmit={(e) => addNewHouse(e)}>
-              <h4>Register your house!</h4>
-              <div className="form-field">
+              <h4>List your house for stay!</h4>
+              {/* <div className="form-field">
                 <input
-                  placeholder="Enter name..."
+                  placeholder="Enter username..."
                   key={owner.id}
                   value={owner.id}
                   onChange={(e) => {
@@ -188,7 +153,7 @@ function Homepage() {
                   }}
                   type="text"
                 ></input>
-              </div>
+              </div> */}
               <div className="form-field">
                 <input
                   placeholder="Enter city location..."
@@ -260,8 +225,8 @@ function Homepage() {
         </Modal>
         <div className="home-nav">
           <div onClick={() => setModalOpen(true)} className="nav-one">
-            <span>Register An Account</span>
-            <p>register name,age...</p>
+            <span>Share your experience</span>
+            <p>stay at new locations,citys,landmarks</p>
           </div>
           <div onClick={() => setHouseModal(true)} className="nav-two">
             <span>List Your House</span>

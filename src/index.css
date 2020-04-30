@@ -640,3 +640,8 @@ input::placeholder {
   float: left;
   left: 15px;
 }
+.logged-in {
+  font-size: 15px;
+  font-weight: bold;
+  margin-right: 8px;
+}
