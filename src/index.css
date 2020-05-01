@@ -649,3 +649,8 @@ input::placeholder {
   font-weight: bold;
   margin-right: 8px;
 }
+.signup-success {
+  font-size: 14px;
+  color: rgb(19, 114, 19);
+  font-weight: bold;
+}

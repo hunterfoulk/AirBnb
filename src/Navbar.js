@@ -15,6 +15,7 @@ function Navbar() {
   const [password, setPassword] = useState("");
   const [{ auth }, dispatch] = useStateValue();
   const [storage, setStorage] = useState();
+  const [registered, setRegistered] = useState(false);
 
   async function handleRegister(e) {
     e.preventDefault();
@@ -26,7 +27,8 @@ function Navbar() {
       })
       .then(
         (res) =>
-          console.log(res.data) & console.log("account created succesfully!")
+          console.log(res.data) & console.log("account created succesfully!"),
+        setRegistered(true)
       )
       .catch((error) =>
         console.error("account not created succesfully:", error)
@@ -193,6 +195,11 @@ function Navbar() {
                 {" "}
                 <FaGoogle className="google-signup" /> Continue with Google
               </button>
+              {registered && (
+                <div className="signup-success">
+                  <p>Account Created!</p>
+                </div>
+              )}
             </div>
           </Modal>
           <Modal onClick={() => setLoginModal(!loginModal)} open={loginModal}>
