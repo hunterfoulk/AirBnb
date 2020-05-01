@@ -30,7 +30,7 @@ function Homepage() {
   const [img, setImg] = useState(null);
   const [drawer, setDrawer] = useState(false);
   const [houses, setHouses] = useState([]);
-  const [{ auth, owners }, dispatch] = useStateValue();
+  const [{ auth }, dispatch] = useStateValue();
 
   // ADD HOUSE
   const addNewHouse = async (e) => {
@@ -38,7 +38,6 @@ function Homepage() {
     let formData = new FormData();
     const userData = auth.user.username;
 
-    // formData.append("owner", owner);
     formData.append("owner", userData);
     formData.append("location", location);
     formData.append("beds", beds);
@@ -142,18 +141,7 @@ function Homepage() {
           <div className="form-container">
             <form onSubmit={(e) => addNewHouse(e)}>
               <h4>List your house for stay!</h4>
-              {/* <div className="form-field">
-                <input
-                  placeholder="Enter username..."
-                  key={owner.id}
-                  value={owner.id}
-                  onChange={(e) => {
-                    setOwner(e.target.value);
-                    setError({ ...isError, owner: false });
-                  }}
-                  type="text"
-                ></input>
-              </div> */}
+
               <div className="form-field">
                 <input
                   placeholder="Enter city location..."

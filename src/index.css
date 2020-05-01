@@ -488,8 +488,12 @@ input::placeholder {
   flex-direction: row;
   /* padding: 10px 10px; */
   /* background-color: rgb(163, 71, 71); */
-  border-bottom: 1px solid rgba(151, 150, 150, 0.692);
+  border-bottom: 1px solid rgba(151, 150, 150, 0.76);
   margin-bottom: 20px;
+}
+.mapped-houses:hover {
+  cursor: pointer;
+  background-color: rgba(233, 233, 233, 0.616);
 }
 .mapped-houses img {
   width: 100%;

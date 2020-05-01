@@ -14,6 +14,7 @@ function Navbar() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [{ auth }, dispatch] = useStateValue();
+  const [storage, setStorage] = useState();
 
   async function handleRegister(e) {
     e.preventDefault();
@@ -49,6 +50,7 @@ function Navbar() {
 
       .then((res) => {
         const user = res.data.payload;
+        localStorage.setItem("user", JSON.stringify(user.username));
 
         console.log("logged in succesfully");
         console.log("response", res);
@@ -65,16 +67,26 @@ function Navbar() {
       .catch((error) => console.error("Log in was not succesful:", error));
   }
 
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      setStorage(JSON.parse(user));
+
+      console.log("localstorage get:", user);
+    }
+  }, [dispatch]);
+
   const handleLogout = () => {
     document.cookie.split(";").forEach(function (c) {
       document.cookie = c
         .replace(/^ +/, "")
         .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
-
+    localStorage.removeItem("user");
     dispatch({
       type: "logout",
     });
+    setStorage();
   };
 
   useEffect(() => {
@@ -86,29 +98,46 @@ function Navbar() {
       <div className="navbar">
         <h2>Airbnb</h2>
         <div className="nav-button-container">
-          {auth.isAuthenticated ? (
-            <>
-              <span className="logged-in"> {auth.user.username}</span>
-              <button onClick={handleLogout} className="signup-button">
-                Log out
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => setLoginModal(true)}
-                className="login-button"
-              >
-                Log in
-              </button>
-              <button
-                onClick={() => setModalSignup(true)}
-                className="signup-button"
-              >
-                Sign up
-              </button>
-            </>
-          )}
+          {(() => {
+            if (auth.isAuthenticated) {
+              return (
+                <>
+                  <span className="logged-in">{auth.user.username}</span>
+
+                  <button onClick={handleLogout} className="signup-button">
+                    Log out
+                  </button>
+                </>
+              );
+            } else if (storage) {
+              return (
+                <>
+                  <span className="logged-in">{storage}</span>
+
+                  <button onClick={handleLogout} className="signup-button">
+                    Log out
+                  </button>
+                </>
+              );
+            } else {
+              return (
+                <>
+                  <button
+                    onClick={() => setLoginModal(true)}
+                    className="login-button"
+                  >
+                    Log in
+                  </button>
+                  <button
+                    onClick={() => setModalSignup(true)}
+                    className="signup-button"
+                  >
+                    Sign up
+                  </button>
+                </>
+              );
+            }
+          })()}
 
           <Modal
             padding="0px 0px"

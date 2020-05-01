@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "./Navbar";
 import Homepage from "./Homepage";
 import { StateProvider } from "./state";
@@ -9,9 +9,6 @@ function App() {
       isAuthenticated: false,
       token: "",
       user: {},
-    },
-    owners: {
-      owners: {},
     },
   };
 
@@ -25,11 +22,6 @@ function App() {
       case "logout":
         return {
           ...initialState,
-        };
-      case "owner":
-        return {
-          ...state,
-          owner: action.owner,
         };
 
       default:
