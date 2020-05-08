@@ -49,6 +49,7 @@ function Homepage() {
 
     let headers = {
       "Content-Type": "multipart/form-data",
+      "Access-Control-Allow-Origin": "*",
     };
 
     Axios.post(
