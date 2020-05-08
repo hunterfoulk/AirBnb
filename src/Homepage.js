@@ -60,7 +60,8 @@ function Homepage() {
       }
     )
 
-      .then(() => {
+      .then((res) => {
+        console.log("response", res);
         console.log("data sent to database");
       })
       .catch((error) => {
