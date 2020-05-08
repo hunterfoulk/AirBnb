@@ -20,11 +20,14 @@ function Navbar() {
   async function handleRegister(e) {
     e.preventDefault();
     await axios
-      .post("http://localhost:5000/signup", {
-        email: email,
-        username: username,
-        password: password,
-      })
+      .post(
+        "https://elegant-haibt-a61338.netlify.app/.netlify/functions/server/airbnb/signup",
+        {
+          email: email,
+          username: username,
+          password: password,
+        }
+      )
       .then(
         (res) =>
           console.log(res.data) & console.log("account created succesfully!"),
@@ -40,13 +43,14 @@ function Navbar() {
 
     axios
       .post(
-        "http://localhost:5000/login",
+        "https://elegant-haibt-a61338.netlify.app/.netlify/functions/server/airbnb/login",
 
         {
           email: email,
           username: username,
           password: password,
         },
+
         { withCredentials: true }
       )
 

@@ -14,7 +14,7 @@ const cookieParser = require("cookie-parser");
 app.use(
   cors({
     origin: "http://localhost:3000",
-    credentials: true,
+    wiithCredentials: true,
   })
 );
 app.use(cookieParser());

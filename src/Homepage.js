@@ -51,10 +51,14 @@ function Homepage() {
       "Content-Type": "multipart/form-data",
     };
 
-    Axios.post("http://localhost:5000/houses", formData, {
-      headers: headers,
-      withCredentials: true,
-    })
+    Axios.post(
+      "https://elegant-haibt-a61338.netlify.app/.netlify/functions/server/airbnb/houses",
+      formData,
+      {
+        headers: headers,
+        withCredentials: true,
+      }
+    )
 
       .then(() => {
         console.log("data sent to database");
@@ -72,7 +76,9 @@ function Homepage() {
 
   const getHouses = async () => {
     try {
-      const response = await fetch("http://localhost:5000/houses");
+      const response = await fetch(
+        "https://elegant-haibt-a61338.netlify.app/.netlify/functions/server/airbnb/houses"
+      );
       const jsonData = await response.json();
       setHouses(jsonData);
     } catch (error) {
