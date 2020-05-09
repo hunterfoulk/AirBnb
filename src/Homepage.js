@@ -49,7 +49,7 @@ function Homepage() {
 
     let headers = {
       "Content-Type": "multipart/form-data",
-      "Access-Control-Allow-Origin": "https://hungry-euler-ec6a3a.netlify.app",
+      // "Access-Control-Allow-Origin": "https://hungry-euler-ec6a3a.netlify.app",
     };
 
     Axios.post(
