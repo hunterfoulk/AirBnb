@@ -52,13 +52,17 @@ function Homepage() {
       // "Access-Control-Allow-Origin": "https://hungry-euler-ec6a3a.netlify.app",
     };
 
-    var proxyUrl = "https://cors-anywhere.herokuapp.com/",
-      targetUrl =
-        "https://elegant-haibt-a61338.netlify.app/.netlify/functions/server/airbnb/houses";
-    Axios.post(proxyUrl + targetUrl, formData, {
-      headers: headers,
-      withCredentials: true,
-    })
+    // var proxyUrl = "https://cors-anywhere.herokuapp.com/",
+    //   targetUrl =
+    //     "https://elegant-haibt-a61338.netlify.app/.netlify/functions/server/airbnb/houses";
+    Axios.post(
+      "https://elegant-haibt-a61338.netlify.app/.netlify/functions/server/airbnb/houses",
+      formData,
+      {
+        headers: headers,
+        withCredentials: true,
+      }
+    )
 
       .then((res) => {
         console.log("response", res);
